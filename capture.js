@@ -6,7 +6,7 @@
   // width to the value defined here, but the height will be
   // calculated based on the aspect ratio of the input stream.
 
-  let width = 320;    // We will scale the photo width to this
+  let width = 640;    // We will scale the photo width to this
   let height = 0;     // This will be computed based on the input stream
 
   // |streaming| indicates whether or not we're currently streaming
@@ -17,20 +17,37 @@
   // The various HTML elements we need to configure or control. These
   // will be set by the startup() function.
 
-  let video = null;
-  let canvas = null;
-  let photo = null;
-  let click_button = null;
+  let stream_stuff = null; // Div containting streaming stuff
+  let video = null; // Video element
+  let click_button = null; // Takes a photo
+  let canvas = null; // The 'hidden' canvas element
+  let prev_img = null;
 
-  let screen_stream = null;
+  let output_div = null;
+  let title = null;
 
-  function startup() {
+  // Initialize the HTML element,
+  function initialize() {
     // Initialize document elements
-    video = document.getElementById('video');
-    canvas = document.getElementById('canvas');
-    photo = document.getElementById('photo');
-    click_button = document.getElementById('click_button');
+    stream_stuff = document.getElementById('streaming_elements');
+    document.getElementById('start_button').onclick = start_stream;
+    document.getElementById('stop_button').onclick = function () {
+      stream_stuff.remove();
+    }
 
+    video = document.getElementById('video');
+    click_button = document.getElementById('click_button');
+    canvas = document.getElementById('canvas');
+
+    output_div = document.getElementById('output');
+    title = document.getElementById('title')
+    title.onblur = function () {
+      document.title = title.innerHTML;
+    }
+
+  }
+
+  function start_stream() {
     navigator.mediaDevices.getDisplayMedia()
       .then(function (stream) {
         video.srcObject = stream;
@@ -75,9 +92,6 @@
     let context = canvas.getContext('2d');
     context.fillStyle = "#AAA";
     context.fillRect(0, 0, canvas.width, canvas.height);
-
-    let data = canvas.toDataURL('image/png');
-    photo.setAttribute('src', data);
   }
 
   // Capture a photo by fetching the current contents of the video
@@ -92,9 +106,13 @@
       canvas.width = width;
       canvas.height = height;
       context.drawImage(video, 0, 0, width, height);
-
       let data = canvas.toDataURL('image/png');
-      photo.setAttribute('src', data);
+
+      let img = document.createElement('img');
+      img.setAttribute('src', data);
+      output_div.appendChild(img);
+      output_div.appendChild(document.createElement('br'));
+
     } else {
       clearphoto();
     }
@@ -102,11 +120,6 @@
 
   // Set up our event listener to run the startup process
   // once loading is complete.
-  function add_listener() {
-    document.getElementById('start_button').onclick = startup;
-    // doc.text("Hello world!", 10, 10);
-    // doc.save("a4.pdf");
-  }
 
-  window.addEventListener('load', add_listener, false);
+  window.addEventListener('load', initialize, false);
 })();

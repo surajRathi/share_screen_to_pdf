@@ -1,26 +1,33 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <title>WebRTC: Still photo capture demo</title>
+  <title>Meet to PDF</title>
   <meta charset='utf-8'>
-  <!--  <link rel="stylesheet" href="main.css" type="text/css" media="all">-->
-  <script src="capture.js">
-  </script>
+  <script src="capture.js"></script>
 </head>
 <body>
 <div class="contentarea">
-  <h1>
-    MDN - WebRTC: Still photo capture demo
-  </h1>
-  <button id="start_button">start</button>
-  <br/>
-  <div class="camera">
-    <video id="video">Video stream not available.</video>
-    <button id="click_button">Take photo</button>
+  <div id="streaming_elements">
+    <h1>
+      Convert Application to PDF
+    </h1>
+
+    <button id="start_button">start</button>
+
+    <br/>
+    <div class="camera">
+      <video id="video">Video stream not available.</video>
+      <button id="click_button">Take photo</button>
+    </div>
+    <br/>
+
+    <canvas id="canvas" style="display: None;">
+    </canvas>
+
+    <button id="stop_button">Remove streaming elements, so you can print the page</button>
   </div>
-  <canvas id="canvas" style="display: None;">
-  </canvas>
-  <div class="output">
+  <div id="output">
+    <h1 contenteditable="true" id="title">My PDF Title</h1>
   </div>
 </div>
 </body>
