@@ -90,9 +90,9 @@ function remove(el) {
     }
 
     $('stop_button').onclick = function () {
-      video.pause();
-      video.removeAttribute('src');
-      video.load();
+      let tracks = video.srcObject.getTracks();
+      tracks.forEach(track => track.stop());
+      video.srcObject = null;
       stream_stuff.remove();
     }
 
