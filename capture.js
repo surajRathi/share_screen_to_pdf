@@ -1,26 +1,24 @@
 // based from https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API/Taking_still_photos
-
+function remove(el) {
+  let element = el;
+  element.remove();
+}
 
 (function () {
-  // The width and height of the captured photo. We will set the
-  // width to the value defined here, but the height will be
-  // calculated based on the aspect ratio of the input stream.
-
+  // The width and height of the captured photo. Set only width, height is automatically calculated
   let width = 640;    // We will scale the photo width to this
   let height = 0;     // This will be computed based on the input stream
 
-  // |streaming| indicates whether or not we're currently streaming
-  // video from the camera. Obviously, we start at false.
-
-  let streaming = false;
+  let streaming = false;  // |streaming| indicates whether or not we're currently streaming
 
   // The various HTML elements we need to configure or control. These
   // will be set by the startup() function.
 
   let stream_stuff = null; // Div containting streaming stuff
+
   let video = null; // Video element
-  let click_button = null; // Takes a photo
-  let auto_clicker = null;
+  let auto_clicker = null; // Used with setInterval
+
   let canvas = null; // The 'hidden' canvas element
   let prev_img = null;
 
@@ -37,7 +35,7 @@
     }
 
     video = document.getElementById('video');
-    click_button = document.getElementById('click_button');
+    document.getElementById('click_button').onclick = takepicture;
     document.getElementById('auto_click').onclick = function () {
       if (auto_clicker === null)
         auto_clicker = setInterval(takepicture, 1000);
@@ -86,10 +84,10 @@
       }
     }, false);
 
-    click_button.addEventListener('click', function (ev) {
-      takepicture();
-      ev.preventDefault();
-    }, false);
+    // click_button.addEventListener('click', function (ev) {
+    //   takepicture();
+    //   ev.preventDefault();
+    // }, false);
 
     clearphoto();
   }
@@ -121,6 +119,7 @@
 
       let img = document.createElement('img');
       img.setAttribute('src', data);
+      img.setAttribute('onauxclick', 'remove(this)');
       output_div.appendChild(img);
       output_div.appendChild(document.createElement('br'));
       prev_img = data;
