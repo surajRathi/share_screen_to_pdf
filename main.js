@@ -51,7 +51,7 @@ function remove(el) {
     // TODO: Implement
 
     // Squared Error
-    let threshold = 30;
+    let threshold = 5000;
     let err = 0;
     //               R  G  B  A
     const offsets = [0, 1, 2];
@@ -59,7 +59,7 @@ function remove(el) {
       offsets.forEach((offset) => err += (img.data[i + offset] - prev_img.data[i + offset]) ** 2);
     }
     err /= 3 * img.height * img.width;
-
+    console.log(err);
     return (err > threshold);
 
     // return true;
