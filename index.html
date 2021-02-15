@@ -5,31 +5,39 @@
   <meta charset='utf-8'>
   <script src="capture.js"></script>
 </head>
+
 <body>
-<div class="contentarea">
-  <div id="streaming_elements">
+<div class="contentarea"> <!-- <- Whats this for? -->
+  <div id="screen_share_controls">
     <h1>
       Convert Application to PDF
     </h1>
 
+    <p>
+      Instructions: Lorem Ipsum
+    </p>
+
     <button id="start_button">start</button>
-
-    <br/>
-    <div class="camera">
-      <video id="video">Video stream not available.</video>
-      <button id="click_button">Take photo</button>
-      <button id="auto_click">Toggle Auto click</button>
-    </div>
     <br/>
 
-    <canvas id="canvas" style="display: None;">
-    </canvas>
+    <video id="video">Video stream not available.</video>
+    <br/>
 
-    <button id="stop_button">Remove streaming elements, so you can print the page</button>
-    <h4>Use middle click to delete photos</h4>
+    <canvas id="canvas" style="display: None;"></canvas>
+
+    <button id="click_button">Take photo</button>
+    <button id="auto_click">Toggle Auto click</button> <!-- TODO: indicator -->
+    <button id="stop_button">Stop screen sharing</button>
+    <br/>
+
+    <p>
+      Use middle click to delete screenshots,
+      after clicking 'Stop Screen Sharing', change the title and use control P to print
+    </p>
   </div>
+
   <div id="output">
-    <h1 contenteditable="true" id="title">My PDF Title</h1>
+    <h1 contenteditable="true" id="title">My PDF Title, Click to Edit</h1>
   </div>
 </div>
 </body>
