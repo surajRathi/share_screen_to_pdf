@@ -117,10 +117,13 @@
       context.drawImage(video, 0, 0, width, height);
       let data = canvas.toDataURL('image/png');
 
+      // TODO: Check for duplicates
+
       let img = document.createElement('img');
       img.setAttribute('src', data);
       output_div.appendChild(img);
       output_div.appendChild(document.createElement('br'));
+      prev_img = data;
 
     } else {
       clearphoto();
