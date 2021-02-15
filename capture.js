@@ -31,11 +31,18 @@ function remove(el) {
   // TODO: Expose status of auto clicker and auto_click_interval in HTML
 
   let canvas = null; // The canvas element for capturing the image, it is hidden.
-  let prev_img = null; // Base64 encoded previous image
+  let prev_data = null; // Base64 encoded previous image
 
   let output_div = null; // div which contains the taken screenshots
   let title = null; // Title element which can be edited by the user.
 
+
+  // @args: output of canvas.toDataURL('image/png')
+  // Checks for similarity between images
+  function is_new_slide(img, prev_img) {
+    // TODO: Implement
+    return true;
+  }
 
   /*
    Capture a photo by fetching the current contents of the video
@@ -53,15 +60,14 @@ function remove(el) {
       context.drawImage(video, 0, 0, width, height);
       let data = canvas.toDataURL('image/png');
 
-      // TODO: Check for duplicates
-
-      let img = document.createElement('img');
-      img.setAttribute('src', data);
-      img.setAttribute('onauxclick', 'remove(this)');
-      output_div.appendChild(img);
-      output_div.appendChild(document.createElement('br'));
-      prev_img = data;
-
+      if (is_new_slide(data, prev_data)) {
+        let img = document.createElement('img');
+        img.setAttribute('src', data);
+        img.setAttribute('onauxclick', 'remove(this)');
+        output_div.appendChild(img);
+        output_div.appendChild(document.createElement('br'));
+        prev_data = data;
+      }
     }
   }
 
