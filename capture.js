@@ -30,11 +30,9 @@
 
     navigator.mediaDevices.getDisplayMedia()
       .then(function (stream) {
-        screen_stream = stream;
-
         video.srcObject = stream;
         video.play();
-        console.log("Got screen sharing stream " + screen_stream.id);
+        console.log("Got screen sharing stream " + stream.id)
       })
       .catch(function (err) {
         console.log("An error occurred: " + err);
