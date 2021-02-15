@@ -28,6 +28,7 @@ function remove(el) {
   let video = null; // Video of shared screen
   let auto_clicker = null; // Used with setInterval to automatically take pictures
   let auto_click_interval = 1000; // ms between auto screenshot
+  // TODO: Expose status of auto clicker and auto_click_interval in HTML
 
   let canvas = null; // The canvas element for capturing the image, it is hidden.
   let prev_img = null; // Base64 encoded previous image
