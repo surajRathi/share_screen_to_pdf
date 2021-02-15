@@ -11,7 +11,7 @@ function remove(el) {
 // Main code
 (function () { // Basically a separate namespace
   let $ = function (id) {
-    return $(id);
+    return document.getElementById(id);
   };
 
   let width = 640;// Width to scale each screenshot too
