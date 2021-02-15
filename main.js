@@ -32,13 +32,17 @@ function remove(el) {
   // TODO: Expose status of auto clicker and auto_click_interval in HTML
 
   let canvas = null; // The canvas element for capturing the image, it is hidden.
-  let prev_data = null; // Base64 encoded previous image
+  let prev_data = null; // ImageData Object,  previous image
 
   let output_div = null; // div which contains the taken screenshots
   let title = null; // Title element which can be edited by the user.
 
 
-  // @args: output of canvas.toDataURL('image/png')
+  // @args: ImageData:
+  //            - width
+  //            - height
+  //            - data : (r,g,b,a)_{x,y} = data[y * width + x: y * width + x + 4]
+
   // Checks for similarity between images
   function is_new_slide(img, prev_img) {
     // TODO: Implement
@@ -59,15 +63,17 @@ function remove(el) {
       canvas.width = width;
       canvas.height = height;
       context.drawImage(video, 0, 0, width, height);
-      let data = canvas.toDataURL('image/png');
+      let cur_data = context.getImageData(0, 0, canvas.width, canvas.height);
 
-      if (is_new_slide(data, prev_data)) {
+      if (is_new_slide(cur_data, prev_data)) {
+        // TODO: Use Blob?
+        let data = canvas.toDataURL('image/png');
         let img = document.createElement('img');
         img.setAttribute('src', data);
         img.setAttribute('onauxclick', 'remove(this)');
         output_div.appendChild(img);
         output_div.appendChild(document.createElement('br'));
-        prev_data = data;
+        prev_data = cur_data;
       }
     }
   }
