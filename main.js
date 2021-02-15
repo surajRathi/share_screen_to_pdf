@@ -14,7 +14,8 @@ function remove(el) {
     return document.getElementById(id);
   };
 
-  let width = 640;// Width to scale each screenshot too
+  // TODO: Gracefully handle resizing of screen which is shared
+  let width = 640; // Width to scale each screenshot too
   let height = 0; // Calculated from aspect ratio of screenshot
 
   let streaming = false;  // are we currently streaming?
@@ -141,10 +142,6 @@ function remove(el) {
       }
     }, false);
 
-    // click_button.addEventListener('click', function (ev) {
-    //   take_screenshot();
-    //   ev.preventDefault();
-    // }, false);
   }
 
 
