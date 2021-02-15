@@ -19,17 +19,22 @@
   let photo = null;
   let click_button = null;
 
+  let screen_stream = null;
+
   function startup() {
+    // Initialize document elements
     video = document.getElementById('video');
     canvas = document.getElementById('canvas');
     photo = document.getElementById('photo');
     click_button = document.getElementById('click_button');
 
-    // navigator.mediaDevices.getUserMedia({video: true, audio: false})
     navigator.mediaDevices.getDisplayMedia()
       .then(function (stream) {
+        screen_stream = stream;
+
         video.srcObject = stream;
         video.play();
+        console.log("Got screen sharing stream " + screen_stream.id);
       })
       .catch(function (err) {
         console.log("An error occurred: " + err);
