@@ -1,36 +1,45 @@
 // based from https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API/Taking_still_photos
+
+// Helper function:
+
+// Usage <element onfoo="remove(this)" />
 function remove(el) {
   let element = el;
   element.remove();
 }
 
-(function () {
-  // The width and height of the captured photo. Set only width, height is automatically calculated
-  let width = 640;    // We will scale the photo width to this
-  let height = 0;     // This will be computed based on the input stream
+// Main code
+(function () { // Basically a separate namespace
 
-  let streaming = false;  // |streaming| indicates whether or not we're currently streaming
+  let width = 640;// Width to scale each screenshot too
+  let height = 0; // Calculated from aspect ratio of screenshot
 
-  // The various HTML elements we need to configure or control. These
-  // will be set by the startup() function.
+  let streaming = false;  // are we currently streaming?
 
-  let stream_stuff = null; // Div containting streaming stuff
 
-  let video = null; // Video element
-  let auto_clicker = null; // Used with setInterval
+  // Define 'global' variables
+  // Most can only be initialized after the html is loaded
 
-  let canvas = null; // The 'hidden' canvas element
-  let prev_img = null;
+  let stream_stuff = null; // Div containing screen sharing controls
 
-  let output_div = null;
-  let title = null;
+  let video = null; // Video of shared screen
+  let auto_clicker = null; // Used with setInterval to automatically take pictures
 
-  // Initialize the HTML element,
+  let canvas = null; // The canvas element for capturing the image, it is hidden.
+  let prev_img = null; // Base64 encoded previous image
+
+  let output_div = null; // div which contains the taken screenshots
+  let title = null; // Title element which can be edited by the user.
+
+  // Called when html is completely loaded.
   function initialize() {
-    // Initialize document elements
+    // Get DOM elements
     stream_stuff = document.getElementById('streaming_elements');
     document.getElementById('start_button').onclick = start_stream;
     document.getElementById('stop_button').onclick = function () {
+      video.pause();
+      video.removeAttribute('src');
+      video.load();
       stream_stuff.remove();
     }
 
