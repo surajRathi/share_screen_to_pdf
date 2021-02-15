@@ -1,10 +1,10 @@
 // based from https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API/Taking_still_photos
 
 // Helper function:
-
 // Usage <element onfoo="remove(this)" />
+// THIS IS USED, DO NOT DELETE
 function remove(el) {
-  let element = el;
+  let element = el; // This was there in the stack overflow answer
   element.remove();
 }
 
@@ -27,6 +27,7 @@ function remove(el) {
 
   let video = null; // Video of shared screen
   let auto_clicker = null; // Used with setInterval to automatically take pictures
+  let auto_click_interval = 1000; // ms between auto screenshot
 
   let canvas = null; // The canvas element for capturing the image, it is hidden.
   let prev_img = null; // Base64 encoded previous image
@@ -34,11 +35,63 @@ function remove(el) {
   let output_div = null; // div which contains the taken screenshots
   let title = null; // Title element which can be edited by the user.
 
+
+  /*
+   Capture a photo by fetching the current contents of the video
+   and drawing it into a canvas, then converting that to a PNG
+   format data URL. By drawing it on an offscreen canvas and then
+   drawing that to the screen, we can change its size and/or apply
+   other changes before drawing it. TODO: What does the last line mean?
+  */
+
+  function takepicture() {
+    let context = canvas.getContext('2d');
+    if (width && height) {
+      canvas.width = width;
+      canvas.height = height;
+      context.drawImage(video, 0, 0, width, height);
+      let data = canvas.toDataURL('image/png');
+
+      // TODO: Check for duplicates
+
+      let img = document.createElement('img');
+      img.setAttribute('src', data);
+      img.setAttribute('onauxclick', 'remove(this)');
+      output_div.appendChild(img);
+      output_div.appendChild(document.createElement('br'));
+      prev_img = data;
+
+    } else {
+      clearphoto();
+    }
+  }
+
+  // Fill the photo with an indication that none has been
+  // captured.
+  function clearphoto() {
+    let context = canvas.getContext('2d');
+    context.fillStyle = "#AAA";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+  }
+
+
   // Called when html is completely loaded.
   function initialize() {
     // Get DOM elements
     stream_stuff = $('streaming_elements');
     $('start_button').onclick = start_stream;
+
+    video = $('video');
+    $('click_button').onclick = takepicture;
+    $('auto_click').onclick = function () {
+      if (auto_clicker === null)
+        auto_clicker = setInterval(takepicture, auto_click_interval);
+      else {
+        clearInterval(auto_clicker);
+        auto_clicker = null;
+      }
+    }
+
     $('stop_button').onclick = function () {
       video.pause();
       video.removeAttribute('src');
@@ -46,19 +99,11 @@ function remove(el) {
       stream_stuff.remove();
     }
 
-    video = $('video');
-    $('click_button').onclick = takepicture;
-    $('auto_click').onclick = function () {
-      if (auto_clicker === null)
-        auto_clicker = setInterval(takepicture, 1000);
-      else {
-        clearInterval(auto_clicker);
-        auto_clicker = null;
-      }
-    }
     canvas = $('canvas');
 
     output_div = $('output');
+
+    // Allow the document title to be edited
     title = $('title')
     title.onblur = function () {
       document.title = title.innerHTML;
@@ -66,6 +111,10 @@ function remove(el) {
 
   }
 
+
+  // Starts the screen sharing
+  // Must be called from the onclick of a button
+  // Because cannot screen share otherwise
   function start_stream() {
     navigator.mediaDevices.getDisplayMedia()
       .then(function (stream) {
@@ -104,45 +153,7 @@ function remove(el) {
     clearphoto();
   }
 
-  // Fill the photo with an indication that none has been
-  // captured.
 
-  function clearphoto() {
-    let context = canvas.getContext('2d');
-    context.fillStyle = "#AAA";
-    context.fillRect(0, 0, canvas.width, canvas.height);
-  }
-
-  // Capture a photo by fetching the current contents of the video
-  // and drawing it into a canvas, then converting that to a PNG
-  // format data URL. By drawing it on an offscreen canvas and then
-  // drawing that to the screen, we can change its size and/or apply
-  // other changes before drawing it.
-
-  function takepicture() {
-    let context = canvas.getContext('2d');
-    if (width && height) {
-      canvas.width = width;
-      canvas.height = height;
-      context.drawImage(video, 0, 0, width, height);
-      let data = canvas.toDataURL('image/png');
-
-      // TODO: Check for duplicates
-
-      let img = document.createElement('img');
-      img.setAttribute('src', data);
-      img.setAttribute('onauxclick', 'remove(this)');
-      output_div.appendChild(img);
-      output_div.appendChild(document.createElement('br'));
-      prev_img = data;
-
-    } else {
-      clearphoto();
-    }
-  }
-
-  // Set up our event listener to run the startup process
-  // once loading is complete.
-
+  // Call initialize on html load
   window.addEventListener('load', initialize, false);
 })();
