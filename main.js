@@ -74,7 +74,7 @@ function remove(el) {
   // Called when html is completely loaded.
   function initialize() {
     // Get DOM elements
-    stream_stuff = $('streaming_elements');
+    stream_stuff = $('screen_share_controls');
     $('start_button').onclick = start_stream;
 
     video = $('video');
