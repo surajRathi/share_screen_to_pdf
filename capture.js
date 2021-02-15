@@ -44,7 +44,7 @@ function remove(el) {
    other changes before drawing it. TODO: What does the last line mean?
   */
 
-  function takepicture() {
+  function take_screenshot() {
     let context = canvas.getContext('2d');
     if (width && height) {
       canvas.width = width;
@@ -61,19 +61,8 @@ function remove(el) {
       output_div.appendChild(document.createElement('br'));
       prev_img = data;
 
-    } else {
-      clearphoto();
     }
   }
-
-  // Fill the photo with an indication that none has been
-  // captured.
-  function clearphoto() {
-    let context = canvas.getContext('2d');
-    context.fillStyle = "#AAA";
-    context.fillRect(0, 0, canvas.width, canvas.height);
-  }
-
 
   // Called when html is completely loaded.
   function initialize() {
@@ -82,10 +71,10 @@ function remove(el) {
     $('start_button').onclick = start_stream;
 
     video = $('video');
-    $('click_button').onclick = takepicture;
+    $('click_button').onclick = take_screenshot;
     $('auto_click').onclick = function () {
       if (auto_clicker === null)
-        auto_clicker = setInterval(takepicture, auto_click_interval);
+        auto_clicker = setInterval(take_screenshot, auto_click_interval);
       else {
         clearInterval(auto_clicker);
         auto_clicker = null;
@@ -146,11 +135,9 @@ function remove(el) {
     }, false);
 
     // click_button.addEventListener('click', function (ev) {
-    //   takepicture();
+    //   take_screenshot();
     //   ev.preventDefault();
     // }, false);
-
-    clearphoto();
   }
 
 
