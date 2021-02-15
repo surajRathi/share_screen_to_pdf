@@ -10,6 +10,9 @@ function remove(el) {
 
 // Main code
 (function () { // Basically a separate namespace
+  let $ = function (id) {
+    return $(id);
+  };
 
   let width = 640;// Width to scale each screenshot too
   let height = 0; // Calculated from aspect ratio of screenshot
@@ -34,18 +37,18 @@ function remove(el) {
   // Called when html is completely loaded.
   function initialize() {
     // Get DOM elements
-    stream_stuff = document.getElementById('streaming_elements');
-    document.getElementById('start_button').onclick = start_stream;
-    document.getElementById('stop_button').onclick = function () {
+    stream_stuff = $('streaming_elements');
+    $('start_button').onclick = start_stream;
+    $('stop_button').onclick = function () {
       video.pause();
       video.removeAttribute('src');
       video.load();
       stream_stuff.remove();
     }
 
-    video = document.getElementById('video');
-    document.getElementById('click_button').onclick = takepicture;
-    document.getElementById('auto_click').onclick = function () {
+    video = $('video');
+    $('click_button').onclick = takepicture;
+    $('auto_click').onclick = function () {
       if (auto_clicker === null)
         auto_clicker = setInterval(takepicture, 1000);
       else {
@@ -53,10 +56,10 @@ function remove(el) {
         auto_clicker = null;
       }
     }
-    canvas = document.getElementById('canvas');
+    canvas = $('canvas');
 
-    output_div = document.getElementById('output');
-    title = document.getElementById('title')
+    output_div = $('output');
+    title = $('title')
     title.onblur = function () {
       document.title = title.innerHTML;
     }
