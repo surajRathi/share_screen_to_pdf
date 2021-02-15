@@ -20,6 +20,7 @@
   let stream_stuff = null; // Div containting streaming stuff
   let video = null; // Video element
   let click_button = null; // Takes a photo
+  let auto_clicker = null;
   let canvas = null; // The 'hidden' canvas element
   let prev_img = null;
 
@@ -37,6 +38,14 @@
 
     video = document.getElementById('video');
     click_button = document.getElementById('click_button');
+    document.getElementById('auto_click').onclick = function () {
+      if (auto_clicker === null)
+        auto_clicker = setInterval(takepicture, 1000);
+      else {
+        clearInterval(auto_clicker);
+        auto_clicker = null;
+      }
+    }
     canvas = document.getElementById('canvas');
 
     output_div = document.getElementById('output');
