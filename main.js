@@ -81,11 +81,15 @@ function remove(el) {
     video = $('video');
     $('click_button').onclick = take_screenshot;
     $('auto_click').onclick = function () {
-      if (auto_clicker === null)
+      if (auto_clicker === null) {
         auto_clicker = setInterval(take_screenshot, auto_click_interval);
-      else {
+        $("auto_click_status").innerText = "ON";
+        $("auto_click_interval").innerText = auto_click_interval;
+      } else {
         clearInterval(auto_clicker);
         auto_clicker = null;
+        $("auto_click_status").innerText = "OFF";
+        $("auto_click_interval").innerText = auto_click_interval;
       }
     }
 
