@@ -45,8 +45,8 @@ function remove(el) {
 
   // Checks for similarity between images
   function is_new_slide(img, prev_img) {
-    if(img === null) return false;
-    if(prev_img === null) return true;
+    if (img === null) return false;
+    if (prev_img === null) return true;
     if (img.width !== prev_img.width || img.height !== prev_img.height) return false;
     // TODO: Implement
 
@@ -73,7 +73,7 @@ function remove(el) {
    other changes before drawing it. TODO: What does the last line mean?
   */
 
-  function take_screenshot() {
+  function take_screenshot(manual = false) {
     let context = canvas.getContext('2d');
     if (width && height) {
       canvas.width = width;
@@ -81,7 +81,7 @@ function remove(el) {
       context.drawImage(video, 0, 0, width, height);
       let cur_data = context.getImageData(0, 0, canvas.width, canvas.height);
 
-      if (is_new_slide(cur_data, prev_data)) {
+      if (manual || is_new_slide(cur_data, prev_data)) {
         // TODO: Use Blob?
         let data = canvas.toDataURL('image/png');
         let img = document.createElement('img');
@@ -102,7 +102,7 @@ function remove(el) {
     $('start_button').onclick = start_stream;
 
     video = $('video');
-    $('click_button').onclick = take_screenshot;
+    $('click_button').onclick = () => take_screenshot(true);
     $('auto_click').onclick = function () {
       if (auto_clicker === null) {
         auto_clicker = setInterval(take_screenshot, auto_click_interval);
