@@ -85,10 +85,11 @@ function remove(el) {
         // TODO: Use Blob?
         let data = canvas.toDataURL('image/png');
         let img = document.createElement('img');
+        img.className = "screenshot";
         img.setAttribute('src', data);
         img.setAttribute('onauxclick', 'remove(this)');
         output_div.appendChild(img);
-        output_div.appendChild(document.createElement('br'));
+        // output_div.appendChild(document.createElement('br'));
         prev_data = cur_data;
       }
     }
