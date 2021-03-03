@@ -43,35 +43,33 @@
 </head>
 
 <body>
-<div class="contentarea"> <!-- <- Whats this for? -->
-  <div id="screen_share_controls">
-    <h1>Convert Application to PDF</h1>
+<div id="screen_share_controls">
+  <h1>Convert Application to PDF</h1>
 
-    <p>Instructions: Lorem Ipsum</p>
+  <p>Instructions: Lorem Ipsum</p>
 
-    <button id="start_button">start</button>
-    <br/>
+  <button id="start_button">start</button>
+  <br/>
 
-    <video id="video">Video stream not available.</video>
-    <br/>
+  <video id="video">Video stream not available.</video>
+  <br/>
 
-    <canvas id="canvas" style="display: None;"></canvas>
+  <canvas id="canvas" style="display: None;"></canvas>
 
-    <button id="click_button">Take photo</button>
-    <button id="auto_click">Toggle Auto click</button> <!-- TODO: indicator -->
-    <button id="stop_button">Stop screen sharing</button>
-    <p><span id="auto_click_status">OFF</span> : every <span id="auto_click_interval">500</span> ms.</p>
-    <br/>
+  <button id="click_button">Take photo</button>
+  <button id="auto_click">Toggle Auto click</button> <!-- TODO: indicator -->
+  <button id="stop_button">Stop screen sharing</button>
+  <p><span id="auto_click_status">OFF</span> : every <span id="auto_click_interval">500</span> ms.</p>
+  <br/>
 
-    <p>
-      Use middle click to delete screenshots,
-      after clicking 'Stop Screen Sharing', change the title and use control P to print
-    </p>
-  </div>
+  <p>
+    Use middle click to delete screenshots,
+    after clicking 'Stop Screen Sharing', change the title and use control P to print
+  </p>
+</div>
 
-  <div id="output">
-    <h1 contenteditable="true" id="title">My PDF Title, Click to Edit</h1>
-  </div>
+<div id="output">
+  <h1 contenteditable="true" id="title">My PDF Title, Click to Edit</h1>
 </div>
 </body>
 </html>
