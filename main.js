@@ -140,6 +140,8 @@ function remove(el) {
   // Must be called from the onclick of a button
   // Because cannot screen share otherwise
   function start_stream() {
+    width = $('screen_share_controls').clientWidth * 0.9
+
     navigator.mediaDevices.getDisplayMedia()
       .then(function (stream) {
         video.srcObject = stream;
@@ -163,6 +165,7 @@ function remove(el) {
 
         video.setAttribute('width', width);
         video.setAttribute('height', height);
+        video.controls = false
         canvas.setAttribute('width', width);
         canvas.setAttribute('height', height);
         streaming = true;
