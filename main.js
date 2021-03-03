@@ -50,16 +50,21 @@ function remove(el) {
     if (img.width !== prev_img.width || img.height !== prev_img.height) return false;
     // TODO: Implement
 
-    // Squared Error
-    let threshold = 5000;
-    let err = 0;
-    //               R  G  B  A
-    const offsets = [0, 1, 2];
-    for (let i = 0; i < 4 * img.height * img.width; i += 4) {
-      offsets.forEach((offset) => err += (img.data[i + offset] - prev_img.data[i + offset]) ** 2);
+    function diff_LSE() {
+      let err = 0;
+      //               R  G  B  A
+      const offsets = [0, 1, 2];
+      for (let i = 0; i < 4 * img.height * img.width; i += 4) {
+        offsets.forEach((offset) => err += (img.data[i + offset] - prev_img.data[i + offset]) ** 2);
+      }
+      err /= 3 * img.height * img.width;
+      $('diff_LSE').innerText = err;
+      return err;
     }
-    err /= 3 * img.height * img.width;
-    console.log(err);
+
+    // Use Squared Error
+    let threshold = 5000;
+    let err = diff_LSE();
     return (err > threshold);
 
     // return true;
