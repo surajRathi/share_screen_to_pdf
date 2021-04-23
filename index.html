@@ -44,12 +44,6 @@
 
 <body>
 <div id="screen_share_controls" style="position:relative;">
-  <div id="metrics_box" style="position: absolute; right:0;top:0;padding:5px;">
-    <ul>
-      <li id="diff_LSE">NULL</li>
-      <li id="diff_foo">100</li>
-    </ul>
-  </div>
   <h1>Convert Application to PDF</h1>
 
   <p>Instructions: Lorem Ipsum</p>
@@ -62,9 +56,11 @@
 
   <canvas id="canvas" style="display: None;"></canvas>
 
+  <label for="auto_click_interval_input">Auto Click Interval: </label>
+  <input type="number" id="auto_click_interval_input" min="0" value="1000"/>
+  <br/>
   <button id="click_button">Take photo</button>
   <button id="auto_click">Toggle Auto click</button> <!-- TODO: indicator -->
-  <button id="discard_similar_slides">Toggle discard similar slides</button> <!-- TODO: indicator -->
   <button id="stop_button">Stop screen sharing</button>
   <p><span id="auto_click_status">OFF</span> : every <span id="auto_click_interval">500</span> ms.</p>
   <br/>
