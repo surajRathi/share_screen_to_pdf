@@ -31,6 +31,8 @@ function remove(el) {
   let auto_click_interval = 500; // ms between auto screenshot
   // TODO: Expose status of auto clicker and auto_click_interval in HTML
 
+  let discard_similar_slides = true;
+
   let canvas = null; // The canvas element for capturing the image, it is hidden.
   let prev_data = null; // ImageData Object,  previous image
 
@@ -48,6 +50,7 @@ function remove(el) {
     if (img === null) return false;
     if (prev_img === null) return true;
     if (img.width !== prev_img.width || img.height !== prev_img.height) return false;
+
     // TODO: Implement
 
     function diff_LSE() {
@@ -78,7 +81,7 @@ function remove(el) {
    other changes before drawing it. TODO: What does the last line mean?
   */
 
-  function take_screenshot(manual = false) {
+  function take_screenshot(check_similarity = false) {
     let context = canvas.getContext('2d');
     if (width && height) {
       canvas.width = width;
@@ -86,7 +89,7 @@ function remove(el) {
       context.drawImage(video, 0, 0, width, height);
       let cur_data = context.getImageData(0, 0, canvas.width, canvas.height);
 
-      if (manual || is_new_slide(cur_data, prev_data)) {
+      if (check_similarity || !discard_similar_slides || is_new_slide(cur_data, prev_data)) {
         // TODO: Use Blob?
         let data = canvas.toDataURL('image/png');
         let img = document.createElement('img');
@@ -119,6 +122,10 @@ function remove(el) {
         $("auto_click_status").innerText = "OFF";
         $("auto_click_interval").innerText = auto_click_interval;
       }
+    }
+
+    $('discard_similar_slides').onclick = function () {
+      discard_similar_slides = !discard_similar_slides;
     }
 
     $('stop_button').onclick = function () {
