@@ -35,6 +35,7 @@ function remove(el) {
 
   let canvas = null; // The canvas element for capturing the image, it is hidden.
   let prev_data = null; // ImageData Object,  previous image
+  let prev_url = null;
 
   let output_div = null; // div which contains the taken screenshots
   let title = null; // Title element which can be edited by the user.
@@ -44,6 +45,13 @@ function remove(el) {
   //            - width
   //            - height
   //            - data : (r,g,b,a)_{x,y} = data[y * width + x: y * width + x + 4]
+
+  /*
+* 1. Take an initial screenshot
+* 2. Get a background color "median"ish on a random sample | Assume white background
+* 3. On next ss, check which pixels have changed, if only background pixels have changed, update the photo
+* 4. Otherwise this is a new slide go to 1
+ */
 
   // Checks for similarity between images
   function is_new_slide(img, prev_img) {
@@ -66,7 +74,7 @@ function remove(el) {
     }
 
     // Use Squared Error
-    let threshold = 5000;
+    let threshold = 200;
     let err = diff_LSE(img, prev_img);
     return (err > threshold);
 
@@ -81,7 +89,7 @@ function remove(el) {
    other changes before drawing it. TODO: What does the last line mean?
   */
 
-  function take_screenshot(check_similarity = false) {
+  function take_screenshot(keep_all_slides = false) {
     let context = canvas.getContext('2d');
     if (width && height) {
       canvas.width = width;
@@ -89,17 +97,18 @@ function remove(el) {
       context.drawImage(video, 0, 0, width, height);
       let cur_data = context.getImageData(0, 0, canvas.width, canvas.height);
 
-      if (check_similarity || !discard_similar_slides || is_new_slide(cur_data, prev_data)) {
+      if (prev_url !== null && (keep_all_slides || is_new_slide(cur_data, prev_data))) {
         // TODO: Use Blob?
-        let data = canvas.toDataURL('image/png');
         let img = document.createElement('img');
         img.className = "screenshot";
-        img.setAttribute('src', data);
+        img.setAttribute('src', prev_url);
         img.setAttribute('onauxclick', 'remove(this)');
         output_div.appendChild(img);
         // output_div.appendChild(document.createElement('br'));
-        prev_data = cur_data;
+
       }
+      prev_url = canvas.toDataURL('image/png');
+      prev_data = cur_data;
     }
   }
 
@@ -113,7 +122,7 @@ function remove(el) {
     $('click_button').onclick = () => take_screenshot(true);
     $('auto_click').onclick = function () {
       if (auto_clicker === null) {
-        auto_clicker = setInterval(take_screenshot, auto_click_interval);
+        auto_clicker = setInterval(() => take_screenshot(!discard_similar_slides), auto_click_interval);
         $("auto_click_status").innerText = "ON";
         $("auto_click_interval").innerText = auto_click_interval;
       } else {
@@ -124,6 +133,7 @@ function remove(el) {
       }
     }
 
+    // TODO: Rename and add indicator
     $('discard_similar_slides').onclick = function () {
       discard_similar_slides = !discard_similar_slides;
     }
@@ -132,6 +142,7 @@ function remove(el) {
       let tracks = video.srcObject.getTracks();
       tracks.forEach(track => track.stop());
       video.srcObject = null;
+      take_screenshot(false)
       stream_stuff.remove();
     }
 
