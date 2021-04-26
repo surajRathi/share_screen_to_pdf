@@ -53,7 +53,7 @@ function remove(el) {
 
     // TODO: Implement
 
-    function diff_LSE() {
+    function diff_LSE(img, prev_img) {
       let err = 0;
       //               R  G  B  A
       const offsets = [0, 1, 2];
@@ -67,7 +67,7 @@ function remove(el) {
 
     // Use Squared Error
     let threshold = 5000;
-    let err = diff_LSE();
+    let err = diff_LSE(img, prev_img);
     return (err > threshold);
 
     // return true;
