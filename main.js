@@ -78,12 +78,21 @@ function remove(el) {
             annotated++;
         }
       }
-      console.log(n_pixels, changed, change_frac * n_pixels, changed < change_frac * n_pixels);
-      console.log(n_pixels, annotated, (1.0 - overwrite_frac) * changed, annotated >= (1.0 - overwrite_frac) * changed);
+      const overwritten = changed - annotated;
 
-      // TODO:
-      // Add a minimum threshold by number not fraction of annotated pixels. Because the cursor
-      return changed < change_frac * n_pixels && annotated >= (1.0 - overwrite_frac) * changed;
+      console.log(n_pixels, changed, change_frac * n_pixels, overwritten, overwrite_frac * n_pixels);
+      $('bar_1').style.height = Math.ceil(1000 * changed / n_pixels).toString() + "%";
+      $('bar_1').innerText = Math.ceil(1000 * changed / n_pixels).toString() + "%";
+      $('bar_2').style.height = Math.ceil(1000 * overwritten / n_pixels).toString() + "%";
+      $('bar_2').innerText = Math.ceil(1000 * overwritten / n_pixels).toString() + "%";
+      $('bar_2').style.height = Math.ceil(1000 * overwritten / n_pixels).toString() + "%";
+      $('bar_2').innerText = Math.ceil(1000 * overwritten / n_pixels).toString() + "%";
+      $('bar_3').style.height = Math.ceil(100 * overwritten / changed).toString() + "%";
+      $('bar_3').innerText = Math.ceil(100 * overwritten / changed).toString() + "%";
+      // changed < 0.5 percent -> annotated
+      //
+      // num changed pixels and number of overwritten pixels should be below a threshold
+      return changed <= 0.005 * n_pixels || annotated >= 0.4 * changed;
     }
 
     return !has_been_annotated(img, prev_img, background_color)

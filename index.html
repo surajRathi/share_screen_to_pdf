@@ -37,6 +37,22 @@
     #title {
       padding: 0.5em 0.5em;
     }
+
+    #metrics_box{
+      width:200px;
+    }
+    .bar_outer {
+      height: 200px;
+      width:30%;
+      background-color:darkgray;
+      display:inline-block;
+    }
+
+    .bar_inner {
+      height:20%;
+      margin-bottom: 0;
+      background-color:red;
+    }
   </style>
 
   <script src="main.js"></script>
@@ -53,6 +69,9 @@
     <ul>
       <li id="diff_LSE">NULL</li>
       <li id="diff_foo">100</li>
+      <div class="bar_outer"><div class="bar_inner" id="bar_1"></div></div>
+      <div class="bar_outer"><div class="bar_inner" id="bar_2"></div></div>
+      <div class="bar_outer"><div class="bar_inner" id="bar_3"></div></div>
     </ul>
   </div>
   <h1>Convert Application to PDF</h1>
