@@ -36,6 +36,7 @@ function remove(el) {
   let canvas = null; // The canvas element for capturing the image, it is hidden.
   let prev_data = null; // ImageData Object,  previous image
   let prev_url = null;
+  let prev_background_color = Uint8ClampedArray.from([255, 255, 255, 255]); // TODO: Shouldn't need to set like this.
 
   let output_div = null; // div which contains the taken screenshots
   let title = null; // Title element which can be edited by the user.
@@ -54,31 +55,38 @@ function remove(el) {
  */
 
   // Checks for similarity between images
-  function is_new_slide(img, prev_img) {
+  function is_new_slide(img, prev_img, background_color) {
     if (img === null) return false;
     if (prev_img === null) return true;
     if (img.width !== prev_img.width || img.height !== prev_img.height) return false;
 
-    // TODO: Implement
-
-    function diff_LSE(img, prev_img) {
-      let err = 0;
-      //               R  G  B  A
-      const offsets = [0, 1, 2];
-      for (let i = 0; i < 4 * img.height * img.width; i += 4) {
-        offsets.forEach((offset) => err += (img.data[i + offset] - prev_img.data[i + offset]) ** 2);
+    function has_been_annotated(img, prev_img, background_color, change_frac = 0.3, overwrite_frac = 0.05, color_dist_thresh = 100) {
+      function color_distance(pixel1, pixel2, offset_1 = 0, offset_2 = 0) {
+        let dist = 0;
+        for (let i = 0; i < 4; i++)
+          dist += (pixel1[offset_1 + i] - pixel2[offset_2 + i]) ** 2;
+        return dist;
       }
-      err /= 3 * img.height * img.width;
-      $('diff_LSE').innerText = err;
-      return err;
+
+      let changed = 0;
+      let annotated = 0;
+      const n_pixels = img.width * img.height;
+      for (let i = 0; i < n_pixels * 4; i += 4) {
+        if (color_distance(img.data, prev_img.data, i, i) > color_dist_thresh) {
+          changed++;
+          if (color_distance(prev_img.data, background_color, i, 0) > color_dist_thresh)
+            annotated++;
+        }
+      }
+      console.log(n_pixels, changed, change_frac * n_pixels, changed < change_frac * n_pixels);
+      console.log(n_pixels, annotated, (1.0 - overwrite_frac) * changed, annotated >= (1.0 - overwrite_frac) * changed);
+
+      // TODO:
+      // Add a minimum threshold by number not fraction of annotated pixels. Because the cursor
+      return changed < change_frac * n_pixels && annotated >= (1.0 - overwrite_frac) * changed;
     }
 
-    // Use Squared Error
-    let threshold = 200;
-    let err = diff_LSE(img, prev_img);
-    return (err > threshold);
-
-    // return true;
+    return !has_been_annotated(img, prev_img, background_color)
   }
 
   /*
@@ -89,6 +97,12 @@ function remove(el) {
    other changes before drawing it. TODO: What does the last line mean?
   */
 
+  function get_background_color(img_data) {
+    // TODO: Implement
+    // return Uint8ClampedArray.from([255, 255, 255, 255]);
+    return [255, 255, 255, 255];
+  }
+
   function take_screenshot(keep_all_slides = false) {
     let context = canvas.getContext('2d');
     if (width && height) {
@@ -97,7 +111,7 @@ function remove(el) {
       context.drawImage(video, 0, 0, width, height);
       let cur_data = context.getImageData(0, 0, canvas.width, canvas.height);
 
-      if (prev_url !== null && (keep_all_slides || is_new_slide(cur_data, prev_data))) {
+      if (prev_url !== null && (keep_all_slides || is_new_slide(cur_data, prev_data, prev_background_color))) {
         // TODO: Use Blob?
         let img = document.createElement('img');
         img.className = "screenshot";
@@ -106,6 +120,7 @@ function remove(el) {
         output_div.appendChild(img);
         // output_div.appendChild(document.createElement('br'));
 
+        prev_background_color = get_background_color(cur_data);
       }
       prev_url = canvas.toDataURL('image/png');
       prev_data = cur_data;
