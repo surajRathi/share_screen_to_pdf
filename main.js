@@ -60,7 +60,7 @@ function remove(el) {
     if (prev_img === null) return true;
     if (img.width !== prev_img.width || img.height !== prev_img.height) return false;
 
-    function has_been_annotated(img, prev_img, background_color, change_frac = 0.3, overwrite_frac = 0.05, color_dist_thresh = 100) {
+    function has_been_annotated(img, prev_img, background_color, changed_frac = 0.002, annotated_frac = 0.5, color_dist_thresh = 1e3) {
       function color_distance(pixel1, pixel2, offset_1 = 0, offset_2 = 0) {
         let dist = 0;
         for (let i = 0; i < 4; i++)
@@ -80,7 +80,9 @@ function remove(el) {
       }
       const overwritten = changed - annotated;
 
-      console.log(n_pixels, changed, change_frac * n_pixels, overwritten, overwrite_frac * n_pixels);
+      console.log(changed / n_pixels * 1000, annotated / changed * 100,
+        changed <= changed_frac * n_pixels || annotated >= annotated_frac * changed, changed_frac*1000, annotated_frac * 100);
+
       $('bar_1').style.height = Math.ceil(1000 * changed / n_pixels).toString() + "%";
       $('bar_1').innerText = Math.ceil(1000 * changed / n_pixels).toString() + "%";
       $('bar_2').style.height = Math.ceil(1000 * overwritten / n_pixels).toString() + "%";
@@ -92,7 +94,7 @@ function remove(el) {
       // changed < 0.5 percent -> annotated
       //
       // num changed pixels and number of overwritten pixels should be below a threshold
-      return changed <= 0.005 * n_pixels || annotated >= 0.4 * changed;
+      return changed <= changed_frac * n_pixels || annotated >= annotated_frac * changed;
     }
 
     return !has_been_annotated(img, prev_img, background_color)
@@ -121,6 +123,8 @@ function remove(el) {
       let cur_data = context.getImageData(0, 0, canvas.width, canvas.height);
 
       if (prev_url !== null && (keep_all_slides || is_new_slide(cur_data, prev_data, prev_background_color))) {
+        console.log("Click!");
+
         // TODO: Use Blob?
         let img = document.createElement('img');
         img.className = "screenshot";
@@ -219,6 +223,7 @@ function remove(el) {
       }
     }, false);
 
+    // TODO: Get RECT
   }
 
 
