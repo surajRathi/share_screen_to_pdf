@@ -29,4 +29,5 @@ Currently a heuristic method is used that depends on defining a background and m
 - Improve the core slide capture algorithm, decrease the sensitivity to parameters
 - Look into computer vision based solutions
 - Clean up the overall interface
+- Add pictures / videos to the README
 - A lot more!
